@@ -1,0 +1,441 @@
+Your Identity
+The first thing you should do when you install Git is to set your user name and email address.
+This is important because every Git commit uses this information, and it’s immutably baked into the commits you start creating:
+
+$ git config --global user.name "John Doe"
+$ git config --global user.email johndoe@example.com
+==============================================
+
+Checking Your Settings
+If you want to check your configuration settings,
+you can use the git config --list command to list all the settings Git can find at that point:
+
+$ git config --list
+You can also check what Git thinks a specific key’s value is by typing git config <key>:
+
+$ git config user.name
+John Doe
+
+==============================================
+Your Editor
+Now that your identity is set up, you can configure the default text editor that will be used when Git needs you to type in a message.
+If not configured, Git uses your system’s default editor.
+
+If you want to use a different text editor, such as Emacs, you can do the following:
+
+$ git config --global core.editor emacs
+
+On a Windows system, if you want to use a different text editor,
+you must specify the full path to its executable file.
+This can be different depending on how your editor is packaged.
+
+In the case of Notepad++, a popular programming editor, you are likely to want to use the 32-bit version,
+since at the time of writing the 64-bit version doesn’t support all plug-ins.
+If you are on a 32-bit Windows system, or you have a 64-bit editor on a 64-bit system, you’ll type something like this:
+$ git config --global core.editor "'C:/Program Files/Notepad++/notepad++.exe' -multiInst -nosession"
+==============================================
+$ git help <verb>
+$ man git-<verb>
+For example, you can get the manpage help for the git config command by running
+
+$ git help config
+
+In addition, if you don’t need the full-blown manpage help,
+but just need a quick refresher on the available options for a Git command,
+you can ask for the more concise “help” output with the -h or --help options, as in:
+
+$ git add -h
+==============================================
+Initializing a Repository in an Existing Directory
+$ git init
+This creates a new subdirectory named .git that contains all of your necessary repository files — a Git repository skeleton.
+At this point, nothing in your project is tracked yet.
+==============================================
+Cloning an Existing Repository
+$ git clone https://github.com/libgit2/libgit2
+
+If you want to clone the repository into a directory named something other than libgit2,
+you can specify the new directory name as an additional argument:
+
+$ git clone https://github.com/libgit2/libgit2 mylibgit
+==============================================
+Checking the Status of Your Files
+The main tool you use to determine which files are in which state is the git status command.
+If you run this command directly after a clone, you should see something like this:
+
+$ git status
+==============================================
+This creates a new file README with 'My Project' content in it.
+$ echo 'My Project' > README
+==============================================
+Tracking New Files
+In order to begin tracking a new file, you use the command git add. To begin tracking the README file, you can run this:
+
+$ git add README
+
+The git add command takes a path name for either a file or a directory; if it’s a directory,
+the command adds all the files in that directory recursively.
+==============================================
+Ignoring Files
+
+The rules for the patterns you can put in the .gitignore file are as follows:
+
+Blank lines or lines starting with # are ignored.
+
+Standard glob patterns work, and will be applied recursively throughout the entire working tree.
+
+You can start patterns with a forward slash (/) to avoid recursivity.
+
+You can end patterns with a forward slash (/) to specify a directory.
+
+You can negate a pattern by starting it with an exclamation point (!).
+
+You can use two asterisks to match nested directories; a/**/z would match a/z, a/b/z, a/b/c/z, and so on.
+
+Here is another example .gitignore file:
+
+# ignore all .a files
+*.a
+
+# but do track lib.a, even though you're ignoring .a files above
+!lib.a
+
+# only ignore the TODO file in the current directory, not subdir/TODO
+/TODO
+
+# ignore all files in any directory named build
+build/
+
+# ignore doc/notes.txt, but not doc/server/arch.txt
+doc/*.txt
+
+# ignore all .pdf files in the doc/ directory and any of its subdirectories
+doc/**/*.pdf
+
+===============================================
+Viewing Your Staged and Unstaged Changes
+
+To see what you’ve changed but not yet staged, type git diff with no other arguments:
+$ git diff
+
+If you want to see what you’ve staged that will go into your next commit, you can use git diff --staged.
+This command compares your staged changes to your last commit:
+$ git diff --staged
+
+===============================================
+Committing Your Changes
+
+$ git commit
+Doing so launches your editor of choice.
+You can see that the default commit message contains the latest output of the git status command commented out and one empty line on top.
+You can remove these comments and type your commit message, or you can leave them there to help you remember what you’re committing.
+
+Alternatively, you can type your commit message inline with the commit command by specifying it after a -m flag, like this:
+$ git commit -m "Story 182: Fix benchmarks for speed"
+
+Skipping the Staging Area
+Adding the -a option to the git commit command makes Git automatically stage every file that is already tracked before doing the commit,
+letting you skip the git add part:
+================================================
+
+Removing Files
+
+To remove a file from Git, you have to remove it from your tracked files (more accurately,
+remove it from your staging area) and then commit. The git rm command does that,
+and also removes the file from your working directory so you don’t see it as an untracked file the next time around.
+
+If you simply remove the file from your working directory,
+it shows up under the “Changes not staged for commit” (that is, unstaged) area of your git status output:
+
+$ rm PROJECTS.md
+Then, if you run git rm, it stages the file’s removal:
+$ git rm PROJECTS.md
+
+Another useful thing you may want to do is to keep the file in your working tree but remove it from your staging area.
+$ git rm --cached README
+===============================================
+Moving Files
+
+$ git mv file_from file_to
+===============================================
+Viewing the Commit History
+
+you run git log in this project, you should get output that looks something like this:
+
+$ git log
+By default, with no arguments, git log lists the commits made in that repository in reverse chronological order;
+that is, the most recent commits show up first.
+As you can see, this command lists each commit with its SHA-1 checksum, the author’s name and email,
+the date written, and the commit message.
+
+One of the more helpful options is -p or --patch, which shows the difference (the patch output) introduced in each commit.
+You can also limit the number of log entries displayed, such as using -2 to show only the last two entries.
+
+$ git log -p -2
+if you want to see some abbreviated stats for each commit, you can use the --stat option:
+
+$ git log --stat
+ the --stat option prints below each commit entry a list of modified files, how many files were changed,
+ and how many lines in those files were added and removed. It also puts a summary of the information at the end.
+
+ Another really useful option is --pretty. This option changes the log output to formats other than the default.
+ A few prebuilt options are available for you to use. The oneline option prints each commit on a single line,
+ which is useful if you’re looking at a lot of commits. In addition, the short, full,
+ and fuller options show the output in roughly the same format but with less or more information, respectively:
+$ git log --pretty=oneline
+
+The most interesting option is format, which allows you to specify your own log output format.
+This is especially useful when you’re generating output for machine parsing — because you specify the format explicitly,
+you know it won’t change with updates to Git:
+
+$ git log --pretty=format:"%h - %an, %ar : %s"
+ca82a6d - Scott Chacon, 6 years ago : changed the version number
+085bb3b - Scott Chacon, 6 years ago : removed unnecessary test
+a11bef0 - Scott Chacon, 6 years ago : first commit
+
+The oneline and format options are particularly useful with another log option called --graph.
+This option adds a nice little ASCII graph showing your branch and merge history:
+
+$ git log --pretty=format:"%h %s" --graph
+
+Common options to git log
+Option	Description
+-p
+
+Show the patch introduced with each commit.
+
+--stat
+
+Show statistics for files modified in each commit.
+
+--shortstat
+
+Display only the changed/insertions/deletions line from the --stat command.
+
+--name-only
+
+Show the list of files modified after the commit information.
+
+--name-status
+
+Show the list of files affected with added/modified/deleted information as well.
+
+--abbrev-commit
+
+Show only the first few characters of the SHA-1 checksum instead of all 40.
+
+--relative-date
+
+Display the date in a relative format (for example, “2 weeks ago”) instead of using the full date format.
+
+--graph
+
+Display an ASCII graph of the branch and merge history beside the log output.
+
+--pretty
+
+Show commits in an alternate format. Options include oneline, short, full, fuller, and format (where you specify your own format).
+
+--oneline
+
+Shorthand for --pretty=oneline --abbrev-commit used together.
+
+===========================================
+Limiting Log Output
+
+$ git log --since=2.weeks
+
+===========================================
+Undoing Things
+
+ if you commit and then realize you forgot to stage the changes in a file you wanted to add to this commit,
+ you can do something like this:
+
+$ git commit -m 'initial commit'
+$ git add forgotten_file
+$ git commit --amend
+You end up with a single commit — the second commit replaces the results of the first.
+
+===========================================
+Unstaging a Staged File
+The next two sections demonstrate how to work with your staging area and working directory changes.
+The nice part is that the command you use to determine the state of those two areas also reminds you how to undo changes to them.
+For example, let’s say you’ve changed two files and want to commit them as two separate changes,
+but you accidentally type git add * and stage them both. How can you unstage one of the two? The git status command reminds you:
+
+$ git add *
+$ git status
+On branch master
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+    renamed:    README.md -> README
+    modified:   CONTRIBUTING.md
+Right below the “Changes to be committed” text, it says use git reset HEAD <file>... to unstage.
+So, let’s use that advice to unstage the CONTRIBUTING.md file:
+
+$ git reset HEAD CONTRIBUTING.md
+=====================================
+Unmodifying a Modified File
+What if you realize that you don’t want to keep your changes to the CONTRIBUTING.md file?
+How can you easily unmodify it — revert it back to what it looked like when you last committed (or initially cloned,
+or however you got it into your working directory)? Luckily, git status tells you how to do that, too.
+In the last example output, the unstaged area looks like this:
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+    modified:   CONTRIBUTING.md
+It tells you pretty explicitly how to discard the changes you’ve made. Let’s do what it says:
+
+$ git checkout -- CONTRIBUTING.md
+======================================
+Showing Your Remotes
+
+$ git remote -v
+
+Adding Remote Repositories
+git remote add <shortname> <url>
+$ git remote add pb https://github.com/paulboone/ticgit
+
+======================================
+Fetching and Pulling from Your Remotes
+
+$ git fetch <remote>
+The command goes out to that remote project and pulls down all the data from that remote project that you don’t have yet.
+After you do this, you should have references to all the branches from that remote, which you can merge in or inspect at any time.
+
+you can use the git pull command to automatically fetch and then merge that remote branch into your current branch.
+======================================
+Pushing to Your Remotes
+
+When you have your project at a point that you want to share, you have to push it upstream.
+The command for this is simple: git push <remote> <branch>.
+If you want to push your master branch to your origin server
+(again, cloning generally sets up both of those names for you automatically),
+then you can run this to push any commits you’ve done back up to the server:
+
+$ git push origin master
+
+This command works only if you cloned from a server to which you have write access and if nobody has pushed in the meantime.
+If you and someone else clone at the same time and they push upstream and then you push upstream,your push will rightly be rejected.
+You’ll have to fetch their work first and incorporate it into yours before you’ll be allowed to push.
+
+=======================================
+Inspecting a Remote
+
+If you want to see more information about a particular remote, you can use the git remote show <remote> command.
+you run this command with a particular shortname, such as origin.
+
+$ git remote show origin
+
+* remote origin
+  URL: https://github.com/my-org/complex-project
+  Fetch URL: https://github.com/my-org/complex-project
+  Push  URL: https://github.com/my-org/complex-project
+  HEAD branch: master
+  Remote branches:
+    master                           tracked
+    dev-branch                       tracked
+    markdown-strip                   tracked
+    issue-43                         new (next fetch will store in remotes/origin)
+    issue-45                         new (next fetch will store in remotes/origin)
+    refs/remotes/origin/issue-11     stale (use 'git remote prune' to remove)
+  Local branches configured for 'git pull':
+    dev-branch merges with remote dev-branch
+    master     merges with remote master
+  Local refs configured for 'git push':
+    dev-branch                     pushes to dev-branch                     (up to date)
+    markdown-strip                 pushes to markdown-strip                 (up to date)
+    master                         pushes to master                         (up to date)
+
+This command shows which branch is automatically pushed to when you run git push while on certain branches.
+It also shows you which remote branches on the server you don’t yet have,
+which remote branches you have that have been removed from the server,
+and multiple local branches that are able to merge automatically with their remote-tracking branch when you run git pull.
+
+===============================
+Renaming and Removing Remotes
+
+You can run git remote rename to change a remote’s shortname.
+For instance, if you want to rename pb to paul, you can do so with git remote rename:
+$ git remote rename pb paul
+
+If you want to remove a remote for some reason
+you can either use git remote remove or git remote rm:
+
+$ git remote remove paul
+Once you delete the reference to a remote this way,
+all remote-tracking branches and configuration settings associated with that remote are also deleted.
+
+===============================
+Listing Your Tags
+
+$ git tag
+This command lists the tags in alphabetical order
+
+You can also search for tags that match a particular pattern. The Git source repo, for instance, contains more than 500 tags.
+If you’re only interested in looking at the 1.8.5 series, you can run this:
+$ git tag -l "v1.8.5*"
+
+you’re supplying a wildcard pattern to match tag names, the use of -l or --list is mandatory.
+
+==============================
+Creating Tags
+
+Git supports two types of tags: lightweight and annotated.
+
+A lightweight tag is very much like a branch that doesn’t change — it’s just a pointer to a specific commit.
+
+Annotated tags, however, are stored as full objects in the Git database.
+They’re checksummed; contain the tagger name, email, and date; have a tagging message;
+and can be signed and verified with GNU Privacy Guard (GPG).
+It’s generally recommended that you create annotated tags so you can have all this information;
+but if you want a temporary tag or for some reason don’t want to keep the other information, lightweight tags are available too.
+
+
+Annotated Tags
+The easiest way is to specify -a when you run the tag command:
+$ git tag -a v1.4 -m "my version 1.4"
+
+Lightweight Tags
+$ git tag v1.4-lw
+
+
+Tagging Later
+specify the commit checksum (or part of it) at the end of the command:
+
+$ git tag -a v1.2 9fceb02
+
+Sharing Tags
+you can run git push origin <tagname>.
+$ git push origin v1.5
+
+This will transfer all of your tags to the remote server that are not already there.
+$ git push origin --tags
+
+=====================
+Deleting Tags
+
+To delete a tag on your local repository, you can use git tag -d <tagname>. For example, we could remove our lightweight tag above as follows:
+
+$ git tag -d v1.4-lw
+Deleted tag 'v1.4-lw' (was e7d5add)
+Note that this does not remove the tag from any remote servers.
+In order to update any remotes, you must use git push <remote> :refs/tags/<tagname>:
+
+$ git push origin :refs/tags/v1.4-lw
+To /git@github.com:schacon/simplegit.git
+ - [deleted]         v1.4-lw
+
+ =======================
+ Checking out Tags
+ If you want to view the versions of files a tag is pointing to, you can do a git checkout,
+ though this puts your repository in “detached HEAD” state, which has some ill side effects:
+
+ you will generally want to create a branch:
+
+$ git checkout -b version2 v2.0.0
+Switched to a new branch 'version2'
+============================================
