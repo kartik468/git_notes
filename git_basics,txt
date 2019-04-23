@@ -439,3 +439,9 @@ To /git@github.com:schacon/simplegit.git
 $ git checkout -b version2 v2.0.0
 Switched to a new branch 'version2'
 ============================================
+
+Creating a New Branch
+What happens when you create a new branch? Well, doing so creates a new pointer for you to
+move around. Let’s say you want to create a new branch called testing. You do this with the git
+branch command:
+$ git branch testing
